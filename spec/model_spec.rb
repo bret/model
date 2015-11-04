@@ -103,4 +103,25 @@ describe Model do
     expect(user[:first]).to eql 'Ken'
   end
 
+  it 'should know whether two models are equal' do
+    user1 = UserModel.new(first: 'Kartik', last: 'Chandran')
+    user2 = UserModel.new(first: 'Kartik', last: 'Chandran')
+    expect(user1).to eql user2
+    expect(user2).to eql user1
+  end
+
+  it 'should find a model equal to its intersection' do
+    UserModel.key(:id)
+    UserModel.key(:created)
+    user1 = UserModel.new(first: 'Kartik', last: 'Chandran', created: Time.now)
+    user2 = UserModel.new(id: 1, first: 'Kartik', last: 'Chandran')
+    expect(user1).to eql user2
+    expect(user2).to eql user1
+  end
+
+  it 'should find different model types with same data not equal' do
+    user1 = UserModel.new(first: 'Kartik', last: 'Chandran', email: "Kartik.Chandran@owner.company.com")
+    user2 = OwnerModel.new(first: 'Kartik', last: 'Chandran', email: "Kartik.Chandran@owner.company.com")
+    expect(user1).to_not eql user2
+  end
 end

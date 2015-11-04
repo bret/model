@@ -47,4 +47,10 @@ class Model
     send key
   end
 
+  def eql?(other)
+    other.instance_of?(self.class) &&
+        keys.all? { |k| send(k).nil? || other.send(k).nil? || send(k) == other.send(k) }
+  end
+  alias_method :==, :eql?
+
 end
