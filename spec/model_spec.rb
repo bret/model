@@ -49,11 +49,19 @@ describe Model do
     expect(address.keys).to eql [:street1, :street2, :city, :state, :zip]
   end
 
-  it 'should fail if undefined keys are used' do
+  it 'should fail if undefined keys are accessed' do
     address = AddressModel.new
     expect { address.street }.to raise_error(NoMethodError)
-    expect { AddressModel.new(street: '1101 Fifth St') }.to raise_error(ArgumentError, 'unknown keyword: street')
-    expect { AddressModel.new(a: 'hi', b: 'hello') }.to raise_error(ArgumentError, 'unknown keywords: a, b')
+  end
+
+  it 'should add keys that do not have keys already defined in Model' do
+    expect { AddressModel.new(street: '1101 Fifth St') }.to_not raise_error
+    expect { AddressModel.new(a: 'hi', b: 'hello') }.to_not raise_error
+  end
+
+  it 'should allow access to keys that are defined in Model initialization' do
+    address = AddressModel.new(street: '1101 Fifth St')
+    expect(address.street).to be == '1101 Fifth St'
   end
 
   require 'faker'
