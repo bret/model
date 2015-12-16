@@ -28,11 +28,12 @@ class Model
   end
 
   def initialize(hash={})
-    unknown = hash.keys - keys
-    if unknown.count > 0
-      raise ArgumentError, "unknown keyword#{'s' if unknown.count > 1}: #{unknown.join', '}"
+    (hash.keys - keys).each do |k|
+      block = Proc.new {hash[k]}
+      self.class.key(k) {instance_exec(&block)}
     end
-    hash.each_pair {|key, v| instance_variable_set "@#{key}", v}
+
+    hash.each {|key, v| instance_variable_set "@#{key}", v}
     (self.class.defaults.keys - hash.keys).each do |key|
       block = self.class.defaults[key]
       instance_variable_set("@#{key}", instance_exec(&block))
