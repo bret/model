@@ -25,6 +25,11 @@ class Model
       attr_accessor symbol
       defaults[symbol] = block if block
     end
+
+    def convert(hash)
+      hash.select! { |k| keys.include?(k) }
+      new(hash)
+    end
   end
 
   def initialize(hash={})

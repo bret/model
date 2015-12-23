@@ -121,4 +121,28 @@ describe Model do
     expect(user2).to_not eql user1
   end
 
+  class CreditCardModel < Model
+    key(:cc_number) { '4111111111111111' }
+    key(:cc_ccv) { '1234' }
+    key(:exp_month) { 12 }
+    key(:exp_year) { 2017 }
+  end
+
+  it 'should handle asymetric comparisons' do
+    model = CreditCardModel.new(cc_ccv: '4321')
+
+    # Submit Credit Card form with data from Model
+    # Retrieve JSON data from api & convert to hash
+
+    retrieved_from_api = {id: 100,
+                          created_at: 1450902495,
+                          last_digits: '1111',
+                          exp_month: 12,
+                          exp_year: 2017}
+
+    retrieved_model = CreditCardModel.convert(retrieved_from_api)
+
+    expect(model).to be == retrieved_model
+  end
+
 end
